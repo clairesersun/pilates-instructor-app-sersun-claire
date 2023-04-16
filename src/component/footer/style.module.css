@@ -1,0 +1,14 @@
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding-top: 10px;
+  margin-bottom: 40px;
+  align-items: center;
+  width: 60%;
+}
+
+.footer .p {
+  margin: 0 10px;
+  cursor: pointer;
+}
