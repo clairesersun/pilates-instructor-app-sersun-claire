@@ -6,7 +6,13 @@ import Footer from "@/component/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
+/*
+To do:
+only show this page if the user is logged in. If they are not, redirect them to the login page.
+
+*/
+
+export default function Settings() {
   return (
     <div>
       {/* {container} */}

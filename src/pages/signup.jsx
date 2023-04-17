@@ -9,7 +9,11 @@ const inter = Inter({ subsets: ["latin"] });
     Create a ServerSide Props with IronSessions
     Within the signup function
         handle change
-        handle reate account
+        handle create account
+
+To do:
+only show this page if the user is logged in. If they are not, redirect them to the login page.
+
 */
 
 export default function Signup(props) {

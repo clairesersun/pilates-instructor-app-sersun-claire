@@ -5,12 +5,11 @@ import Head from "next/head";
 const inter = Inter({ subsets: ["latin"] });
 
 /* 
-    Create a ServerSide Props with IronSessions
-    Within the login function
-        create a Login Function
-        create a handle login function
-*/
 
+To do:
+only show this page if the user is logged in. If they are not, redirect them to the login page.
+
+*/
 export default function AccountCreated(props) {
   return (
     <div>
