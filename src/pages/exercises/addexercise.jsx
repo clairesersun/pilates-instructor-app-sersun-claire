@@ -13,3 +13,20 @@ if it is in add the CRUD is add ... make sure the name is not already taken in t
 
 Add a back btn in the left hand corner. This will return them to either the exercise name or the library of movements. Check with their browser to determine location.
 */
+
+// THIS WORKS!! RE-ADD WHEN READY WITH DATABASE
+// export const getServerSideProps = withIronSessionSsr(
+//   async function getServerSideProps({ req }) {
+//     const user = req.session.user;
+//     if (!user) {
+//       req.session.destroy()
+//       return {
+//         redirect: {
+//           destination: '/login',
+//           permanent: false
+//         }
+//       }
+//     };
+//   },
+//   sessionOptions
+// );

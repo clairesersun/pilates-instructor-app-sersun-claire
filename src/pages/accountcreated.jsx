@@ -10,7 +10,25 @@ To do:
 only show this page if the user is logged in. If they are not, redirect them to the login page.
 
 */
-export default function AccountCreated(props) {
+
+// THIS WORKS!! RE-ADD WHEN READY WITH DATABASE
+// export const getServerSideProps = withIronSessionSsr(
+//   async function getServerSideProps({ req }) {
+//     const user = req.session.user;
+//     if (!user) {
+//       req.session.destroy()
+//       return {
+//         redirect: {
+//           destination: '/login',
+//           permanent: false
+//         }
+//       }
+//     };
+//   },
+//   sessionOptions
+// );
+
+export default function AccountCreated() {
   return (
     <div>
       {/* {container} */}

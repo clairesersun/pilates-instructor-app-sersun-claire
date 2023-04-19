@@ -10,6 +10,29 @@ const inter = Inter({ subsets: ["latin"] });
 To do:
 only show this page if the user is logged in. If they are not, redirect them to the login page.
 
+// THIS WORKS!! RE-ADD WHEN READY WITH DATABASE
+// export const getServerSideProps = withIronSessionSsr(
+//   async function getServerSideProps({ req }) {
+//     const user = req.session.user;
+//     if (!user) {
+//       req.session.destroy()
+//       return {
+//         redirect: {
+//           destination: '/login',
+//           permanent: false
+//         }
+//       }
+//     };
+//   },
+//   sessionOptions
+// );
+
+<form>
+  <label for="myprofilephoto">Select a file:</label>
+  <input type="file" id="myprofilephoto" name="myprofilephoto">
+</form>
+then save this to the users profile DB
+
 */
 
 export default function Settings() {

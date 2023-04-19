@@ -9,3 +9,20 @@ To do:
     ^^the prop changes the order. The standard is alphabetical, but the filter changes the view
 -- Have a scrolling alphabetical element that only appears when the alphabetical sorting is present
 */
+
+// THIS WORKS!! RE-ADD WHEN READY WITH DATABASE
+// export const getServerSideProps = withIronSessionSsr(
+//   async function getServerSideProps({ req }) {
+//     const user = req.session.user;
+//     if (!user) {
+//       req.session.destroy()
+//       return {
+//         redirect: {
+//           destination: '/login',
+//           permanent: false
+//         }
+//       }
+//     };
+//   },
+//   sessionOptions
+// );

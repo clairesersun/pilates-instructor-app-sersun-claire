@@ -4,6 +4,8 @@ import Link from 'next/link'
 import Head from 'next/head'
 import Header from '@/component/header'
 import Footer from '@/component/footer'
+import { withIronSessionSsr } from "iron-session/next";
+import sessionOptions from "../config/session";
 
 const inter = Inter({ subsets: ['latin'] })
 /*
@@ -11,6 +13,23 @@ To do:
 only show this page if the user is logged in. If they are not, redirect them to the login page.
 
 */
+// THIS WORKS!! RE-ADD WHEN READY WITH DATABASE
+// export const getServerSideProps = withIronSessionSsr(
+//   async function getServerSideProps({ req }) {
+//     const user = req.session.user;
+//     if (!user) {
+//       req.session.destroy()
+//       return {
+//         redirect: {
+//           destination: '/login',
+//           permanent: false
+//         }
+//       }
+//     };
+//   },
+//   sessionOptions
+// );
+
 export default function Home() {
   return (
     <div>

@@ -2,21 +2,76 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import Link from "next/link";
 import Head from "next/head";
-
+import { useState } from "react";
+import { useRouter } from "next/router";
 const inter = Inter({ subsets: ["latin"] });
 
 /* 
-    Create a ServerSide Props with IronSessions
+    Create a ServerSide Props with IronSessions <-- do I need?? I do not think so
     Within the signup function
         handle change
         handle create account
 
-To do:
-only show this page if the user is logged in. If they are not, redirect them to the login page.
-
 */
 
 export default function Signup(props) {
+  const router = useRouter();
+  const [
+    {
+      username,
+      email,
+      igHandle,
+      password,
+      "confirm-password": confirmPassword,
+    },
+    setForm,
+  ] = useState({
+    username: "",
+    email: "",
+    igHandle: "",
+    password: "",
+    "confirm-password": "",
+  });
+  const [error, setError] = useState("");
+
+  function handleChange(e) {
+    setForm({
+      username,
+      email,
+      igHandle,
+      password,
+      "confirm-password": confirmPassword,
+      ...{ [e.target.name]: e.target.value.trim() },
+    });
+  }
+  async function handleCreateAccount(e) {
+    e.preventDefault();
+    if (!username.trim()) return setError("Must include username");
+    // email
+    if (!email.trim()) return setError("Must include email");
+    // igHandle
+    if (!igHandle.trim()) return setError("Must include Instagram handle");
+    if (!password.trim()) return setError("Must include password");
+    if (!confirmPassword.trim()) return setError("Please confirm password");
+    if (password !== confirmPassword) return setError("Passwords must Match");
+
+    try {
+      // console.log(username, email, igHandle, password);
+      const res = await fetch("/api/auth/signup", {
+        //Everything is stopping here. look at line 60 on the above route
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ username, email, igHandle, password }),
+      });
+      if (res.status === 200) return router.push("/");
+      const { error: message } = await res.json();
+      setError(message);
+    } catch (err) {
+      console.log(err);
+    }
+  }
   return (
     <div>
       {/* {container} */}
@@ -37,7 +92,7 @@ export default function Signup(props) {
       >
         <Image
           src="/vercel.svg"
-          alt="Loho"
+          alt="Logo"
           className="dark:invert"
           width={100}
           height={24}
@@ -46,34 +101,57 @@ export default function Signup(props) {
 
         <form
           className="mb-32 grid text-center lg:mb-0 lg:grid-cols-1 lg:text-left group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          /*onSubmit={handleCreateAccount}*/
+          onSubmit={handleCreateAccount}
         >
           <label htmlFor="username">Username: </label>
           <input
             type="text"
             name="username"
             id="username"
-            /*onChange={handleChange}*/
-            /*value={username}*/
+            onChange={handleChange}
+            value={username}
           />
+
+          {/* email */}
+          <label htmlFor="email">Email: </label>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            onChange={handleChange}
+            value={email}
+          />
+          {/* igHandle */}
+          <label htmlFor="igHandle">
+            Instagram Handle (i.e. @clubpilates):
+          </label>
+          <input
+            type="text"
+            name="igHandle"
+            id="igHandle"
+            onChange={handleChange}
+            value={igHandle}
+          />
+          {/* password */}
           <label htmlFor="password">Password: </label>
           <input
             type="password"
             name="password"
             id="password"
-            /*onChange={handleChange}*/
-            /*value={password}*/
+            onChange={handleChange}
+            value={password}
           />
+          {/* confirmed password */}
           <label htmlFor="confirm-password">Confirm Password: </label>
           <input
             type="password"
             name="confirm-password"
             id="confirm-password"
-            /*onChange={handleChange}*/
-            /*value={confirmPassword}*/
+            onChange={handleChange}
+            value={confirmPassword}
           />
           <button>Sign up</button>
-          {/*error && <p>{error}</p>*/}
+          {error && <p>{error}</p>}
         </form>
         <Link href="/login">
           <p>back to login</p>

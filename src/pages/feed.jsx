@@ -8,3 +8,19 @@ only show this page if the user is logged in. If they are not, redirect them to 
 -- profiles are clickable. show a pop up vs of the others profiles (what they deemed public)
 
 */
+// THIS WORKS!! RE-ADD WHEN READY WITH DATABASE
+// export const getServerSideProps = withIronSessionSsr(
+//   async function getServerSideProps({ req }) {
+//     const user = req.session.user;
+//     if (!user) {
+//       req.session.destroy()
+//       return {
+//         redirect: {
+//           destination: '/login',
+//           permanent: false
+//         }
+//       }
+//     };
+//   },
+//   sessionOptions
+// );
