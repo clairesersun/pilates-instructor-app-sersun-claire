@@ -1,4 +1,7 @@
 /*
+
+GET RID OF THIS PAGE
+
 To do:
 -- only show this page if the user is logged in. If they are not, redirect them to the login page.
 -- Have a form that when the submit button (add exercise) is clicked, it populates to the database

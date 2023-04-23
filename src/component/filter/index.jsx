@@ -11,4 +11,8 @@ Library of Movements
 -- close button which will exit out of module
 <h1>Filter</h1>
 -- each section that is required to filter within LoM page. maybe treat them like check boxes that saves the preferences when you clikc the apply filter button at bottom. when the apply filter button is clicked, it applies the props and filter to the LoM movementList component
+
+
+<Filter />
+
 */

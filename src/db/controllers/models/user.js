@@ -1,7 +1,4 @@
 import { Schema, model, models } from 'mongoose'
-// import bookSchema from './book' <--- this should be the classes and movements model
-//do I need the following???
-import exerciseSchema from './movements'
 import bcrypt from 'bcrypt'
 
 const userSchema = new Schema({
@@ -35,8 +32,7 @@ const userSchema = new Schema({
     required: true,
     minLength: 6,
     maxLength: 15
-  },
-//   favoriteBooks: [bookSchema] <-- this would be their classes and any movemnts stored within them... maybe its just the classes and the movements is stored with in the classes???
+  }
 })
 
 userSchema.pre('save', async function(next) {

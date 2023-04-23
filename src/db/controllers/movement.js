@@ -1,18 +1,34 @@
-import Exercise from '../models/movements'
+import classesSchema from './models/classes'
 import { normalizeId, dbConnect } from './util'
 
-//maybe include an update here too? It wuold be an async function
-
-export async function create(planeOfMotion, spinalMovement, bodyClassification, equipment, history, description, image, media, variations) {
-  if (!(planeOfMotion && spinalMovement && bodyClassification && equipment && history))
-    throw new Error('Must include plane of motion, spinal movement, body classification, equipment and history')
-
+//get a list of movements
+export async function getAll(movement) {
   await dbConnect()
+  return movement.map(movements => normalizeId(movements))
+  //it says this is not a function... why??
+}
 
-  const exercise = await Exercise.create({planeOfMotion, spinalMovement, bodyClassification, equipment, history, description, image, media, variations})
+//add a movement to an existing or new class
+export async function add(classesId, movement) {
+  await dbConnect()
+  const classes = await classesSchema.findByIdAndUpdate(
+    classesId,
+    { $addToSet: { movement: movement } },
+    { new: true }
+  )
+  if (!classes) return null
+  const addedExercise = classes.movement.find(movement => _id === movement.movementId)
+  return normalizeId(addedExercise)
+}
 
-  if (!user)
-    throw new Error('Error inserting exercise')
-
-  return normalizeId(exercise)
+//delete a movement from a class
+export async function remove(movementId, classesId) {
+  await dbConnect()
+  const updateClass = findByIdAndUpdate(
+    classesId,
+    {$pull: {movement: {_id: movementId}}},
+    { new: true }
+    )
+    if (!updateClass) return null
+    return true
 }

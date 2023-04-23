@@ -1,77 +1,76 @@
+// create, update, remove
+//do I need read?
 import { withIronSessionApiRoute } from "iron-session/next";
 import sessionOptions from "../../config/session"
 import db from '../../db'
+import classesSchema from "@/db/controllers/models/classes";
 
-//WHAT DO I NEED TO DO HERE? EVERYTHING
-// this handler runs for /api/classes with any request method
+// this handler runs for /api/classes with any request method (GET, POST, etc)
+//create, update, remove
 export default withIronSessionApiRoute(
   async function handler(req, res) {
-    const user = req.session.user
+    const classes = classesSchema.get(_id) //how do I get the Id of a class out? I don't think this is correct
     switch(req.method) {
-      // TODO: On a POST request, do what? create class with the name and first exercise
+      // On a POST request, add a exercise
       case 'POST' :
-        return create(req, res)
+        //create
+        if (!classes) {
+          return res.status(401).end() }
+          try {
+            const data = JSON.parse(req.body) //data is an object
+            const addedClass = await db.classes.add(data) 
+            if (!addedClass) {
+              req.session.destroy()
+              return res.status(401).end
+            }
+            return res.status(200).json(addedClass)
+          } catch (err) {
+            return res.status(400).json({error: err.message})
+          }
+          //On a PUT request, update a class
       case 'PUT' :
-        return update(req, res)
-        //do I need a GET option? I think so.
-      case 'GET' :
-        return receive(req, res)
+        if (!classes) {
+          return res.status(401).end()
+        }
+        try {
+          const data =JSON.parse(req.body)
+          const updatedClass = await db.classes.update(data)
+          if (!updatedClass) {
+            req.session.destroy()
+            return res.status(401).end()
+          }
+          return res.status(200).json(updatedClass)
+        } catch (err) {
+          return res.status(400).json({error: err.message})
+        }
+
+          //On a DELETE request, remove a class
       case 'DELETE' :
-        return remove(req, res)
-    default:
-       return res.status(404).end()  
-    }},
+        //remove
+        if (!classes) {
+          return res.status(401).end()}
+          try {
+            const data = JSON.parse(req.body)
+            const deletedClass = await db.classes.remove(data.id) 
+            if (!deletedClass) {
+              req.session.destroy()
+              return res.status(401).end()
+            }
+            return res.status(200).json(deletedClass)
+          } catch (err) {
+            return res.status(400).json({error: err.message})
+          }
+      default:
+        return res.status(404).end()
+      }
+      
+      
+    },
     sessionOptions
 )
 
 
 
-//create the functions down below to make it easier to read
 
 
-async function create(req, res) {
-    if (!user) {
-        return res.status(401).end() }
-        try {
-          const data = JSON.parse(req.body) //data is an object {}
-          //push information to this json
-          //finish the function
-        } catch (err) {
-            return res.status(400).json({error: err.message})
-            }
-    }
-async function update(req, res) {
-    if (!user) {
-        return res.status(401).end() }
-        try {
-          const data = JSON.parse(req.body) //data is an object {}
-          //anything changed by user will be updated
-          //finish the function
-      } catch (err) {
-          return res.status(400).json({error: err.message})
-          }  
-}
 
-async function receive(req, res) {
-    if (!user) {
-        return res.status(401).end() }
-        try {
-          const data = JSON.parse(req.body) //data is an object {}
-          //anything changed by user will be updated
-          //finish the function
-      } catch (err) {
-          return res.status(400).json({error: err.message})
-          }  
-}
-
-async function remove(req, res) {
-    if (!user) {
-        return res.status(401).end() }
-        try {
-            //delete all class information... can you have a confirmation? would that go here?
-            //finish the function
-        }
-        catch (err) {
-            return res.status(400).json({error: err.message})
-            }
-}

@@ -55,6 +55,7 @@ async function logout(req, res) {
 
 async function signup(req, res) {
   try {
+    console.log(db)
     const {username, email, igHandle, password} = req.body
     const user = await db.user.create(username, email, igHandle, password) 
     //I am recieving an error here... Why?

@@ -77,8 +77,8 @@ export default function Signup(props) {
       {/* {container} */}
 
       <Head>
-        <title>Pilates Class Planning Login</title>
-        <meta name="description" content="Pilates Class Planning Login" />
+        <title>Yoga Class Planning Login</title>
+        <meta name="description" content="Yoga Class Planning Login" />
         <link
           rel="icon"
           href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧘‍♀️</text></svg>"

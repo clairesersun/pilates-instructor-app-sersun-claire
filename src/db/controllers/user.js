@@ -1,4 +1,4 @@
-import User from '../models/user'
+import User from './models/user'
 import { normalizeId, dbConnect } from './util'
 
 //do I need to create a delete async function?

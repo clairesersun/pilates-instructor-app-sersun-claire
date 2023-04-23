@@ -7,8 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 /* 
 
 To do:
-only show this page if the user is logged in. If they are not, redirect them to the login page.
-
+only show this page if the user has created an account and it exists 
 */
 
 // THIS WORKS!! RE-ADD WHEN READY WITH DATABASE
@@ -34,10 +33,10 @@ export default function AccountCreated() {
       {/* {container} */}
 
       <Head>
-        <title>Pilates Class Planning Account Creation Success</title>
+        <title>Yoga Class Planning Account Creation Success</title>
         <meta
           name="description"
-          content="Pilates Class Planning Account Creation Success"
+          content="Yoga Class Planning Account Creation Success"
         />
         <link
           rel="icon"

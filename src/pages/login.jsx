@@ -66,7 +66,7 @@ export default function Login() {
       {/* {container} */}
 
       <Head>
-        <title>Pilates Class Planning Login</title>
+        <title>Yoga Class Planning Login</title>
         <meta name="description" content="Pilates Class Planning Login" />
         <link
           rel="icon"
