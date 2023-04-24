@@ -2,48 +2,40 @@ import Link from "next/link";
 import useLogout from "../../hooks/useLogout";
 import styles from "./style.module.css";
 import Image from "next/image";
+import { Inter } from "next/font/google";
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Header() {
-  // const logout = useLogout();
+  const logout = useLogout();
   return (
     <header className={styles.header}>
-      <p>
-        <Link href="/login" /*onClick={logout}*/>
+      <p
+        className={`${inter.className} mb-3 text-2xl font-semibold group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30`}
+      >
+        <Link onClick={logout} href="/login">
           <Image
-            src="/vercel.svg"
+            src="/icons8-logout-rounded-left-100.png"
             alt="Logout"
             className="dark:invert"
-            width={100}
-            height={24}
+            width={40}
+            height={12}
             priority
           />
-          Logout
         </Link>
       </p>
-      <p>
+
+      <p
+        className={`${inter.className} mb-3 text-2xl font-semibold group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30`}
+      >
         <Link href="/">
           <Image
-            src="/vercel.svg"
-            alt="Logo"
-            className="dark:invert"
-            width={100}
-            height={24}
-            priority
-          />
-          Logo
-        </Link>
-      </p>
-      <p>
-        <Link href="/">
-          <Image
-            src="/vercel.svg"
+            src="/icons8-home.svg"
             alt="Home"
             className="dark:invert"
-            width={100}
+            width={40}
             height={24}
             priority
           />
-          Home
         </Link>
       </p>
     </header>

@@ -7,14 +7,14 @@ import styles from "../../styles/exerciselist.module.css";
 import Head from "next/head";
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "../../config/session";
-import movement from "../../db";
+import Movement from "../../db/controllers/models/movements";
 
 // -- only show this page if the user is logged in. If they are not, redirect them to the login page.
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
     const user = req.session.user;
     let movements;
-    if (user) movements = await movement.getAll();
+    if (user) movements = await Movement.getAll();
     if (!user) {
       req.session.destroy();
       return {

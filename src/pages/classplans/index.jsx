@@ -5,8 +5,7 @@ import ClassPlanList from "@/component/classplanList";
 import Link from "next/link";
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "src/config/session";
-import db from "../../db";
-import Classes from "../../db/controllers/models";
+import Classes from "../../db/controllers/models/classes";
 
 // -- only show this page if the user is logged in. If they are not, redirect them to the login page.
 

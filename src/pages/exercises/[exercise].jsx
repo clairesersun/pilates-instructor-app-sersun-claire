@@ -24,6 +24,7 @@ import Header from "@/component/header";
 import styles from "../../styles/exercise.module.css";
 import Image from "next/image";
 import Footer from "@/component/footer";
+import Movement from "../../db/controllers/models/movements";
 
 // export const getServerSideProps = withIronSessionSsr(
 //   async function getServerSideProps({ req, params }) {

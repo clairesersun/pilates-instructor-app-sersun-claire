@@ -127,7 +127,7 @@ import Header from "@/component/header";
 import styles from "../../styles/exercise.module.css";
 import Footer from "@/component/footer";
 import MovementList from "@/component/movementList";
-import Classes from "@/db/controllers/models";
+import Classes from "@/db/controllers/models/classes";
 import { useState } from "react";
 import Link from "next/link";
 import MovementPreview from "@/component/movementPreview";
