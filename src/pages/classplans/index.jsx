@@ -6,6 +6,7 @@ import Link from "next/link";
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "src/config/session";
 import db from "../../db";
+import Classes from "../../db/controllers/models";
 
 // -- only show this page if the user is logged in. If they are not, redirect them to the login page.
 
@@ -13,7 +14,7 @@ export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
     const user = req.session.user;
     let classes;
-    if (user) classes = await db.classes.getAll(user.id);
+    if (user) classes = await Classes.getAll(user.id);
     if (!classes) {
       req.session.destroy();
       return {

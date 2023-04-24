@@ -1,4 +1,4 @@
-import { Schema, SchemaTypes} from 'mongoose'
+import { Schema, SchemaTypes, model, models } from 'mongoose'
 import movementSchema from './movements'
 
 const classesSchema = new Schema({
@@ -30,4 +30,4 @@ const classesSchema = new Schema({
 })
 
 
-export default classesSchema
+export default models.Classes || model('Classes', classesSchema)

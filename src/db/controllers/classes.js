@@ -1,7 +1,6 @@
-import classesSchema from './models/classes'
 import { normalizeId, dbConnect } from './util'
 import { add } from './movement'
-import db from "../../db"
+import Classes from './models/classes'
 
 
 //add classes from adding one exercise 
@@ -12,7 +11,7 @@ export async function create( classesId, className, datesTaught, location, descr
   await dbConnect()
   const addedExercises = add(classesId, exercise)
   const dateCreated = Date.now()
-  const classes = await db.classes.create({className, dateCreated, datesTaught, location, description, addedExercises})
+  const classes = await Classes.create({className, dateCreated, datesTaught, location, description, addedExercises})
 
   if (!classes)
     throw new Error('Error inserting exercise')
@@ -23,10 +22,11 @@ export async function create( classesId, className, datesTaught, location, descr
 
 //show all classes
 export async function getAll(userId) {
+  console.log(userId)
   await dbConnect()
-  const usersClasses = await db.classes.findMany(userId).lean()
-  if (!usersClasses) return  // if there are none just return not return null
-  return usersClasses.map(usersClasses => normalizeId(usersClasses))
+  const classes = await Classes.findById(userId).lean() //or by Id???
+  if (!classes) return null // if there are none just return not return null
+  return classes.map(classes => normalizeId(classes))
 }
 
 
@@ -41,19 +41,19 @@ export async function getAll(userId) {
         // alert(ar) // 2,3,4,1,5
 export async function update(userId, className, datesTaught, location, description) {
   await dbConnect()
-  const classes = await classesSchema.findByIdAndUpdate(
+  const updatedClass = await Classes.findByIdAndUpdate(
     userId,
     { $set: { className, datesTaught, location, description } },
     { new: true }
   )
-  if (!classes) return null
-  return normalizeId(classes)
+  if (!updatedClass) return null
+  return normalizeId(updatedClass)
 }
 
 //delete classes
 export async function remove(classesId) {
   await dbConnect()
-  const removedClass = await classesSchema.findByIdAndUpdate(
+  const removedClass = await Classes.findByIdAndUpdate(
     { $pull: { classesId } },
     { new: true }
   )

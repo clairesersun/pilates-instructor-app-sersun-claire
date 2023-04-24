@@ -21,7 +21,6 @@ import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "../../config/session";
 import { useMovementContext } from "../../context/movements";
 import Header from "@/component/header";
-import db from "../../db";
 import styles from "../../styles/exercise.module.css";
 import Image from "next/image";
 import Footer from "@/component/footer";
@@ -29,7 +28,7 @@ import Footer from "@/component/footer";
 // export const getServerSideProps = withIronSessionSsr(
 //   async function getServerSideProps({ req, params }) {
 //     const props = {};
-//     const movement = await db.movement.getAll(params.id);
+//     const movement = await Movement.getAll(params.id);
 //     //do I need this???
 //     if (movement) props.movement = movement;
 //     return { props };
@@ -62,14 +61,12 @@ export default function Exercise(props) {
   let movement;
   if (props.movement) {
     movement = props.movement;
-  } else movement = allMovements.find((movement) => exerciseId === exerciseId);
+  } else movement = allMovements.find((movement) => movement.id === movementId);
 
   //add to classes
   async function addToClasses() {
-    // TODO: use fetch to call POST /api/book
     const res = await fetch("/api/movements", {
       method: "POST",
-      // Be sure to pass book in body (use JSON.stringify)
       body: JSON.stringify({ ...movement }),
     });
     // Call router.replace(router.asPath) if you receive a 200 status
@@ -90,17 +87,15 @@ export default function Exercise(props) {
       </Head>
 
       <Header />
-      {movement && (
-        <main>
+      <main>
+        <div className={styles.controls}>
+          <a href="#" onClick={() => router.back()}>
+            Return
+          </a>
+          <button onClick={addToClasses}>Add to Class</button>
           <MovementInfo {...movement} />
-          <div className={styles.controls}>
-            <a href="#" onClick={() => router.back()}>
-              Return
-            </a>
-            <button onClick={addToClasses}>Add to Class</button>
-          </div>
-        </main>
-      )}
+        </div>
+      </main>
       <Footer />
     </>
   );
@@ -117,6 +112,16 @@ function MovementInfo({
     <>
       <div className={styles.titleGroup}>
         <div>
+          <img
+            src={
+              image
+                ? image
+                : "https://i0.wp.com/yogawithtg.com/wp-content/uploads/2018/03/logo3.png?fit=300%2C167&ssl=1"
+            }
+            alt={englishName}
+            width={100}
+            height={50}
+          />
           <h1>{englishName}</h1>
           <h2>{sanskritName}</h2>
           <h3>{translatedName}</h3>
@@ -125,14 +130,6 @@ function MovementInfo({
           <p> Description: </p>
           <p>{description}</p>
         </section>
-        <Image
-          src={
-            image
-              ? image
-              : "https://i0.wp.com/yogawithtg.com/wp-content/uploads/2018/03/logo3.png?fit=300%2C167&ssl=1"
-          }
-          alt={englishName}
-        />
       </div>
     </>
   );

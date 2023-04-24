@@ -2,23 +2,22 @@
 //do I need read?
 import { withIronSessionApiRoute } from "iron-session/next";
 import sessionOptions from "../../config/session"
-import db from '../../db'
-import classesSchema from "@/db/controllers/models/classes";
+import Classes from "@/db/controllers/models";
 
 // this handler runs for /api/classes with any request method (GET, POST, etc)
 //create, update, remove
 export default withIronSessionApiRoute(
   async function handler(req, res) {
-    const classes = classesSchema.get(_id) //how do I get the Id of a class out? I don't think this is correct
+    const classes = Classes.get(_id) //how do I get the Id of a class out? I don't think this is correct
     switch(req.method) {
-      // On a POST request, add a exercise
+      // On a POST request, add a exercise to new class
       case 'POST' :
         //create
         if (!classes) {
           return res.status(401).end() }
           try {
             const data = JSON.parse(req.body) //data is an object
-            const addedClass = await db.classes.add(data) 
+            const addedClass = await Classes.add(user.id, data) 
             if (!addedClass) {
               req.session.destroy()
               return res.status(401).end
@@ -34,7 +33,7 @@ export default withIronSessionApiRoute(
         }
         try {
           const data =JSON.parse(req.body)
-          const updatedClass = await db.classes.update(data)
+          const updatedClass = await Classes.update(data)
           if (!updatedClass) {
             req.session.destroy()
             return res.status(401).end()
@@ -51,7 +50,7 @@ export default withIronSessionApiRoute(
           return res.status(401).end()}
           try {
             const data = JSON.parse(req.body)
-            const deletedClass = await db.classes.remove(data.id) 
+            const deletedClass = await Classes.remove(data.id) 
             if (!deletedClass) {
               req.session.destroy()
               return res.status(401).end()

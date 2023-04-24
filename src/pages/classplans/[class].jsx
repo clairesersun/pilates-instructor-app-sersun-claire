@@ -124,10 +124,13 @@ import { useRouter } from "next/router";
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "../../config/session";
 import Header from "@/component/header";
-import db from "../../db";
 import styles from "../../styles/exercise.module.css";
 import Footer from "@/component/footer";
 import MovementList from "@/component/movementList";
+import Classes from "@/db/controllers/models";
+import { useState } from "react";
+import Link from "next/link";
+import MovementPreview from "@/component/movementPreview";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req, params }) {
@@ -143,7 +146,7 @@ export const getServerSideProps = withIronSessionSsr(
       };
     }
     props.user = user;
-    const classes = await db.classes.find(req.session.user.id, params.id);
+    const classes = await Classes.find(req.session.user.id, params.id);
     if (classes) props.classes = classes;
     return { props };
   },
@@ -171,60 +174,59 @@ export default function ClassPlan(props) {
     if (res.status === 200) {
       router.replace(router.asPath);
     }
-
-    //delete from classes
-    async function removeClass() {
-      const res = await fetch("/api/classes", {
-        method: "DELETE",
-        body: JSON.stringify({ id: classes.id }),
-      });
-      if (res.status === 200) {
-        router.replace(router.asPath);
-      }
-
-      //delete from classes
-      async function deleteExercise() {
-        const res = await fetch("/api/movement", {
-          method: "DELETE",
-          body: JSON.stringify({ id: movement.id }),
-        });
-        if (res.status === 200) {
-          router.replace(router.asPath);
-        }
-      }
-    }
-
-    return (
-      <>
-        <Head>
-          <title>Yoga Class</title>
-          <meta name="description" content="Yoga Class" />
-          <link
-            rel="icon"
-            href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧘‍♀️</text></svg>"
-          />
-        </Head>
-
-        <Header />
-        {/* 
-        I need to create the body of this page
-        
-        {movement && (
-          <main>
-            <ClassInfo {...classes} />
-            <MovementPreview {...movement} />
-            <div className={styles.controls}>
-              <a href="#" onClick={() => router.back()}>
-                Return
-              </a>
-              <button onClick={addToClasses}>Add to Class</button>
-            </div>
-          </main>
-        )} */}
-        <Footer />
-      </>
-    );
   }
+
+  //delete from classes
+  async function removeClass() {
+    const res = await fetch("/api/classes", {
+      method: "DELETE",
+      body: JSON.stringify({ id: classes.id }),
+    });
+    if (res.status === 200) {
+      router.replace(router.asPath);
+    }
+  }
+
+  //delete from classes
+  async function deleteExercise() {
+    const res = await fetch("/api/movement", {
+      method: "DELETE",
+      body: JSON.stringify({ id: movement.id }),
+    });
+    if (res.status === 200) {
+      router.replace(router.asPath);
+    }
+  }
+
+  return (
+    <>
+      <Head>
+        <title>Yoga Class</title>
+        <meta name="description" content="Yoga Class" />
+        <link
+          rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧘‍♀️</text></svg>"
+        />
+      </Head>
+
+      <Header />
+      <main>
+        <div className={styles.controls}>
+          <a href="#" onClick={() => router.back()}>
+            Return
+          </a>
+        </div>
+        <ClassInfo {...classes} id="staticText" />
+
+        <button onClick={DisplayEdit}>Edit</button>
+        <EditClass {...classes} id="editableText" />
+        <button onClick={removeClass} id="editableText">
+          Delete Class
+        </button>
+      </main>
+      <Footer />
+    </>
+  );
 }
 
 function ClassInfo({
@@ -238,7 +240,7 @@ function ClassInfo({
 }) {
   return (
     <>
-      <div className={styles.titleGroup}>
+      <div className={styles.titleGroup} id="staticText">
         <div>
           <h1>{className}</h1>
           <p>{datesTaught}</p>
@@ -251,9 +253,105 @@ function ClassInfo({
           <p>{description}</p>
         </section>
         <section>
-          <MovementList {...exercises} />
+          <div className={styles.list}>
+            {exercises.map((movements) => (
+              <>
+                <Link
+                  key={movements.id}
+                  href={`/exercises/${id}`}
+                  style={{ textDecoration: "none" }}
+                >
+                  <MovementPreview {...movements} />
+                </Link>
+                <button onClick={deleteExercise()}>Delete Exercise</button>
+              </>
+            ))}
+          </div>
         </section>
       </div>
     </>
   );
+}
+
+function EditClass({
+  className,
+  dateCreated,
+  datesTaught,
+  location,
+  description,
+  exercises,
+}) {
+  const [setForm] = useState();
+  function handleChange(e) {
+    setForm({
+      className,
+      dateCreated,
+      datesTaught,
+      location,
+      description,
+      exercises,
+      ...{ [e.target.name]: e.target.value },
+    });
+    updateClass(e.target.value);
+  }
+  return (
+    <>
+      <form onSubmit={updateClass()}>
+        <label htmlFor="className">Class Name:</label>
+        <input
+          type="text"
+          id="className"
+          name="className"
+          onChange={handleChange}
+          value={className}
+        />
+        <label htmlFor="dateCreated"> Date Created: </label>
+        <input
+          type="text"
+          id="dateCreated"
+          name="dateCreated"
+          onChange={handleChange}
+          value={dateCreated}
+        />
+        <label htmlFor="datesTaught"> Dates Taught: </label>
+        <input
+          type="text"
+          id="datesTaught"
+          name="datesTaught"
+          onChange={handleChange}
+          value={datesTaught}
+        />
+        <label htmlFor="location"> Location: </label>
+        <input
+          type="text"
+          id="location"
+          name="location"
+          onChange={handleChange}
+          value={location}
+        />
+        <label htmlFor="description"> Description: </label>
+        <input
+          type="text"
+          id="description"
+          name="description"
+          onChange={handleChange}
+          value={description}
+        />
+        <input type="submit" value="Submit"></input>
+      </form>
+    </>
+  );
+}
+
+function DisplayEdit() {
+  var editableText = document.getElementById("editableText");
+  var staticText = document.getElementById("staticText");
+
+  if (editableText.style.display === "none") {
+    editableText.style.display = "block";
+    staticText.style.display === "none";
+  } else {
+    editableText.style.display = "none";
+    staticText.style.display = "block";
+  }
 }

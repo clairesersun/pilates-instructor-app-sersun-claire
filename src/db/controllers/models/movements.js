@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose'
+import { Schema, model, models } from 'mongoose'
 
 const movementSchema = new Schema({
   englishName: String,
@@ -8,7 +8,7 @@ const movementSchema = new Schema({
   image: String
 })
 
-export default movementSchema
+export default models.Movement || model('Movement', movementSchema)
 
 
 
