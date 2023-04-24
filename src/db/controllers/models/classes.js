@@ -1,5 +1,5 @@
 import { Schema, SchemaTypes, model, models } from 'mongoose'
-import Movement from './movements'
+import movementSchema from './movements'
 
 const classesSchema = new Schema({
     userId: {
@@ -25,7 +25,7 @@ const classesSchema = new Schema({
         type: String,
         required: false
     },
-    exercises: [Movement]
+    exercises: [movementSchema]
     //^^ how do I determine thte order of these?
 })
 
