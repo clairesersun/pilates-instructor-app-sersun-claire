@@ -1,12 +1,11 @@
 import Classes from './models/classes'
 import { normalizeId, dbConnect } from './util'
-import Movement from './models/movements'
 
 //get a list of movements
-export async function getAll() {
+export async function getAll(classes) {
   await dbConnect()
-  return Movement.map(movements => normalizeId(movements))
-  //it says this is not a function... why??
+  const classToSearch = await Classes.findById(classes.id)
+  return classToSearch.exercises.map(exercises => normalizeId(exercises))
 }
 
 //add a movement to an existing or new class
@@ -14,11 +13,11 @@ export async function add(classesId, movement) {
   await dbConnect()
   const classes = await Classes.findByIdAndUpdate(
     classesId,
-    { $addToSet: { movement: movement } },
+    { $addToSet: { exercises: movement } },
     { new: true }
   )
   if (!classes) return null
-  const addedExercise = Classes.exercises.find(movement => _id === movement.movementId)
+  const addedExercise = classes.exercises.findById(movement => _id === movement.movementId)
   return normalizeId(addedExercise)
 }
 
@@ -27,7 +26,7 @@ export async function remove(movementId, classesId) {
   await dbConnect()
   const updateClass = Classes.findByIdAndUpdate(
     classesId,
-    {$pull: {movement: {_id: movementId}}},
+    {$pull: {exercises: {_id: movementId}}},
     { new: true }
     )
     if (!updateClass) return null

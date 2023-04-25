@@ -24,7 +24,9 @@ import Header from "@/component/header";
 import styles from "../../styles/exercise.module.css";
 import Image from "next/image";
 import Footer from "@/component/footer";
-import Movement from "../../db/controllers/models/movements";
+import Classes from "../../db/controllers/models/classes";
+
+//you do not need to store these movements. Just look at them via the fetch and use the query from previous page either classes or movement list. Then you can add to classes from here.
 
 // export const getServerSideProps = withIronSessionSsr(
 //   async function getServerSideProps({ req, params }) {
@@ -58,11 +60,17 @@ export const getServerSideProps = withIronSessionSsr(
 export default function Exercise(props) {
   const router = useRouter();
   const movementId = router.query.id;
-  const [{ allMovements }] = useMovementContext();
+  const [{ allMovements, movementSearchResults }] = useMovementContext();
   let movement;
   if (props.movement) {
     movement = props.movement;
   } else movement = allMovements.find((movement) => movement.id === movementId);
+
+  useEffect(() => {
+    if (!props.movement && !movement) router.push("/");
+  }, [props.movement, movementSearchResults, allMovements, movement, router]);
+
+  //make a function to find a given movement by query that is sent via previous page, either exercises or classplans/[class] this is the redirection which the [exercise] is the query sent to the api route that is fetching the info
 
   //add to classes
   async function addToClasses() {

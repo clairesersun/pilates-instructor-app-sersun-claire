@@ -7,14 +7,14 @@ import styles from "../../styles/exerciselist.module.css";
 import Head from "next/head";
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "../../config/session";
-import Movement from "../../db/controllers/models/movements";
+import Classes from "../../db/controllers/models/classes";
+
+//you do not need to store these movements. Just look at them via the fetch if selected it will direct to exercise page using query that is sent to see exercise. If you search for a movement, that query is sent to show, if none, just show all movements.
 
 // -- only show this page if the user is logged in. If they are not, redirect them to the login page.
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
     const user = req.session.user;
-    let movements;
-    if (user) movements = await Movement.getAll();
     if (!user) {
       req.session.destroy();
       return {
@@ -25,7 +25,7 @@ export const getServerSideProps = withIronSessionSsr(
       };
     }
 
-    return { props: { user, movements } };
+    return { props: { user } };
   },
   sessionOptions
 );
@@ -44,6 +44,7 @@ export default function LibraryOfMovements(props) {
     if (res.status !== 200) return;
     const data = await res.json();
     dispatch({
+      //it says this is not a function... why?
       action: actions.SHOWALL_MOVEMENTS,
       payload: data?.items?.map(({ english_name }) => ({
         englishName: english_name,

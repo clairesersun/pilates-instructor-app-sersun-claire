@@ -1,21 +1,36 @@
 import { withIronSessionApiRoute } from "iron-session/next";
 import sessionOptions from "../../config/session"
-import Movement from '../../db/controllers/models'
-import Classes from '../../db/controllers/models'
+import Classes from '../../db/controllers/models/classes'
+import movement from '../../db'
 
 // this handler runs for /api/movements with any request method (GET, POST, etc)
 //add, remove
 export default withIronSessionApiRoute(
   async function handler(req, res) {
-    const classes = Classes.id.movement.id //how do I get the Id of a class out? I don't think this is correct
+    const userId = req.session.user
+    const classes = Classes.findById(userId)
     switch(req.method) {
+            // On a POST request, add a exercise
+            case 'GET' :
+              if (!classes) {
+                return res.status(401).end() }
+                try {
+                  const allClasses = await Classes.getAll(classes) 
+                  if (!allClasses) {
+                    req.session.destroy()
+                    return res.status(401).end
+                  }
+                  return res.status(200).json(allClasses)
+                } catch (err) {
+                  return res.status(400).json({error: err.message})
+                }
       // On a POST request, add a exercise
       case 'POST' :
         if (!classes) {
           return res.status(401).end() }
           try {
             const data = JSON.parse(req.body) //data is an object
-            const addedExercise = await Movement.add(classes.id, data) 
+            const addedExercise = await movement.add(classes.id, data) 
             if (!addedExercise) {
               req.session.destroy()
               return res.status(401).end

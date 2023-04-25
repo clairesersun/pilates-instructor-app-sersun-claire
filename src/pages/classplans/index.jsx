@@ -5,6 +5,7 @@ import ClassPlanList from "@/component/classplanList";
 import Link from "next/link";
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "src/config/session";
+import classes from "../../db";
 import Classes from "../../db/controllers/models/classes";
 
 // -- only show this page if the user is logged in. If they are not, redirect them to the login page.
@@ -12,9 +13,10 @@ import Classes from "../../db/controllers/models/classes";
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
     const user = req.session.user;
-    let classes;
-    if (user) classes = await Classes.getAll(user.id);
-    if (!classes) {
+    const userId = user.id;
+    let allClasses;
+    if (user) allClasses = await Classes.getAll(userId);
+    if (!allClasses) {
       req.session.destroy();
       return {
         redirect: {
@@ -27,7 +29,7 @@ export const getServerSideProps = withIronSessionSsr(
       props: {
         user: req.session.user,
         isLoggedIn: true,
-        classes,
+        classes: allClasses,
       },
     };
   },

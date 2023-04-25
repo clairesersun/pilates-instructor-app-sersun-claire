@@ -3,17 +3,31 @@
 import { withIronSessionApiRoute } from "iron-session/next";
 import sessionOptions from "../../config/session"
 import Classes from "@/db/controllers/models";
+import classes from "@/db";
 
 // this handler runs for /api/classes with any request method (GET, POST, etc)
 //create, update, remove
 export default withIronSessionApiRoute(
   async function handler(req, res) {
-    const classes = Classes.get(_id) //how do I get the Id of a class out? I don't think this is correct
+    const specificClass = Classes.get(_id) //how do I get the Id of a class out? I don't think this is correct
     switch(req.method) {
+      // On a GET request, show classes
+      case 'GET' :
+        //create
+          try {
+            const allClasses = await classes.getAll(user.id) 
+            if (!allClasses) {
+              req.session.destroy()
+              return res.status(401).end
+            }
+            return res.status(200).json(allClasses)
+          } catch (err) {
+            return res.status(400).json({error: err.message})
+          }
       // On a POST request, add a exercise to new class
       case 'POST' :
         //create
-        if (!classes) {
+        if (!specificClass) {
           return res.status(401).end() }
           try {
             const data = JSON.parse(req.body) //data is an object
@@ -28,7 +42,7 @@ export default withIronSessionApiRoute(
           }
           //On a PUT request, update a class
       case 'PUT' :
-        if (!classes) {
+        if (!specificClass) {
           return res.status(401).end()
         }
         try {
@@ -46,7 +60,7 @@ export default withIronSessionApiRoute(
           //On a DELETE request, remove a class
       case 'DELETE' :
         //remove
-        if (!classes) {
+        if (!specificClass) {
           return res.status(401).end()}
           try {
             const data = JSON.parse(req.body)

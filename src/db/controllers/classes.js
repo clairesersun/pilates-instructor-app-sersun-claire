@@ -24,7 +24,7 @@ export async function create( classesId, className, datesTaught, location, descr
 export async function getAll(userId) {
   console.log(userId)
   await dbConnect()
-  const classes = await Classes.findById(userId).lean() //or by Id???
+  const classes = await Classes.findById(userId).lean()
   if (!classes) return null // if there are none just return not return null
   return classes.map(classes => normalizeId(classes))
 }

@@ -1,4 +1,4 @@
-import { Schema, model, models } from 'mongoose'
+import { Schema } from 'mongoose'
 
 const movementSchema = new Schema({
   englishName: String,
@@ -8,7 +8,11 @@ const movementSchema = new Schema({
   image: String
 })
 
-export default models.Movement || model('Movement', movementSchema)
+export default movementSchema
+
+
+//adjust everything to look at the classes model with the call Classes.exercises
+//Thats the only way to view this schema because it is a subdocument
 
 
 
