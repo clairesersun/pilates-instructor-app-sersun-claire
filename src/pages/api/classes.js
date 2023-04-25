@@ -10,10 +10,14 @@ import classes from "@/db";
 export default withIronSessionApiRoute(
   async function handler(req, res) {
     const specificClass = Classes.get(_id) //how do I get the Id of a class out? I don't think this is correct
+    const user = req.session.user
     switch(req.method) {
       // On a GET request, show classes
-      case 'GET' :
+      case 'GET' : //need to specif recieving a specific vs general
+      switch(action) {
         //create
+        // TODO: implement POST /api/classes/all
+        case 'all' :
           try {
             const allClasses = await classes.getAll(user.id) 
             if (!allClasses) {
@@ -24,6 +28,19 @@ export default withIronSessionApiRoute(
           } catch (err) {
             return res.status(400).json({error: err.message})
           }
+        }
+        case 'one' :
+          try {
+            const oneClass = await Classes.findById(specificClass) 
+            if (!oneClass) {
+              req.session.destroy()
+              return res.status(401).end
+            }
+            return res.status(200).json(oneClass)
+          } catch (err) {
+            return res.status(400).json({error: err.message})
+          }
+        
       // On a POST request, add a exercise to new class
       case 'POST' :
         //create

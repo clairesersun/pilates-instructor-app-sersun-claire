@@ -14,9 +14,7 @@ export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
     const user = req.session.user;
     const userId = user.id;
-    let allClasses;
-    if (user) allClasses = await Classes.getAll(userId);
-    if (!allClasses) {
+    if (!user) {
       req.session.destroy();
       return {
         redirect: {
@@ -29,7 +27,6 @@ export const getServerSideProps = withIronSessionSsr(
       props: {
         user: req.session.user,
         isLoggedIn: true,
-        classes: allClasses,
       },
     };
   },
@@ -37,6 +34,16 @@ export const getServerSideProps = withIronSessionSsr(
 );
 
 export default function ClassPlans(props) {
+  async function getAllClasses() {
+    const res = await fetch("/api/classes/all", {
+      method: "GET",
+      // body: JSON.stringify({ ...classes }),
+    });
+    // Call router.replace(router.asPath) if you receive a 200 status
+    if (res.status === 200) {
+      router.replace(router.asPath);
+    }
+  }
   return (
     <>
       <Head>
@@ -50,10 +57,10 @@ export default function ClassPlans(props) {
 
       <Header />
 
-      <main>
+      <main onLoad={getAllClasses()}>
         <h1 className={styles.title}>Favorite Books</h1>
         {props.classes.length > 0 ? (
-          <ClassPlanList classes={props.classes} />
+          <ClassPlanList classes={classes} />
         ) : (
           <NoClasses />
         )}

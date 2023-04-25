@@ -48,7 +48,7 @@ export default function ClassPlan(props) {
 
     //have an update
     async function updateClass() {
-      const res = await fetch("/api/classes", {
+      const res = await fetch("/api/classes/one", {
         method: "PUT",
         body: JSON.stringify({ id: classes.id }),
       });
@@ -59,7 +59,7 @@ export default function ClassPlan(props) {
 
     //delete from classes
     async function removeClass() {
-      const res = await fetch("/api/classes", {
+      const res = await fetch("/api/classes/one", {
         method: "DELETE",
         body: JSON.stringify({ id: classes.id }),
       });
