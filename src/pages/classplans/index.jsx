@@ -5,14 +5,17 @@ import ClassPlanList from "@/component/classplanList";
 import Link from "next/link";
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "src/config/session";
-// import classes from "../../db";
+import { Inter } from "next/font/google";
+import Footer from "@/component/footer";
+const inter = Inter({ subsets: ["latin"] });
+// import classes from "@/db/controllers";
 
 // -- only show this page if the user is logged in. If they are not, redirect them to the login page.
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
     const user = req.session.user;
-    const userId = user.id;
+
     if (!user) {
       req.session.destroy();
       return {
@@ -25,7 +28,6 @@ export const getServerSideProps = withIronSessionSsr(
     return {
       props: {
         user: req.session.user,
-        isLoggedIn: true,
       },
     };
   },
@@ -38,12 +40,17 @@ export default function ClassPlans(props) {
       method: "GET",
       // body: JSON.stringify({ ...classes }),
     });
+    console.log(res);
+    const data = await res.json();
+    console.log(data);
     // Call router.replace(router.asPath) if you receive a 200 status
     if (res.status === 200) {
       router.replace(router.asPath);
     }
   }
   let classes = getAllClasses();
+
+  console.log(getAllClasses());
   return (
     <>
       <Head>
@@ -55,27 +62,42 @@ export default function ClassPlans(props) {
         />
       </Head>
 
-      <Header />
-
-      <main>
-        <h1 className={styles.title}>Classes</h1>
+      <main className="flex flex-col items-center  p-24">
+        <Header />
+        <h1
+          className={`${inter.className} 
+        mb-3 text-3xl font-semibold flex justify-center `}
+        >
+          Classes
+        </h1>
         {classes?.length > 0 ? (
           <ClassPlanList classes={classes} />
         ) : (
           <NoClasses />
         )}
       </main>
+      <Footer />
     </>
   );
 }
 
 function NoClasses() {
   return (
-    <div className={styles.noClasses}>
-      <p>
-        <strong>You do not have any classes.</strong>
+    <div
+      className={
+        styles.noClasses && "flex min-h-screen flex-col items-center p-24 "
+      }
+    >
+      <p
+        className={`${inter.className} 
+        mb-3 text-2xl flex justify-center `}
+      >
+        You do not have any classes.
       </p>
-      <p>
+      <p
+        className={`${inter.className} 
+        mb-3 text-1xl flex justify-center `}
+      >
         <Link href="/exercises">Why don&apos;t you create some? </Link>
       </p>
     </div>

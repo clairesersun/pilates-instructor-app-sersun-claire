@@ -6,10 +6,16 @@ To do:
 
 import styles from "./style.module.css";
 import Image from "next/image";
+import { Inter } from "next/font/google";
+const inter = Inter({ subsets: ["latin"] });
 
 export default function MovementPreview({ englishName, sanskritName, image }) {
   return (
-    <div className={styles.preview}>
+    <div
+      className={`${inter.className} 
+       flex place-items-center
+     group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30`}
+    >
       <Image
         src={
           image
@@ -19,10 +25,16 @@ export default function MovementPreview({ englishName, sanskritName, image }) {
         alt={englishName}
         width={100}
         height={100}
+        className={`${inter.className} 
+      justify-left relative flex place-items-center px-5 py-4`}
       />
       <div>
-        <p>
-          <strong>{englishName}</strong>
+        <p
+          className={`${inter.className} 
+      text-left justify-left relative flex place-items-center
+      mb-3 text-2xl font-semibold  `}
+        >
+          {englishName}
         </p>
         <p>{sanskritName}</p>
       </div>

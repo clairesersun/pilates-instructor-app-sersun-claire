@@ -19,7 +19,8 @@ export default withIronSessionApiRoute(
         // TODO: implement POST /api/classes/all
         case 'all' :
           try {
-            const allClasses = await classes.getAll(user.id) 
+            const userId = user.id
+            const allClasses = await classes.getAll(userId) 
             if (!allClasses) {
               req.session.destroy()
               return res.status(401).end

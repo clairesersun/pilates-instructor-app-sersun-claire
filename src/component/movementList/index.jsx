@@ -11,17 +11,18 @@ prop movements= {
 import Link from "next/link";
 import MovementPreview from "../movementPreview";
 import styles from "./style.module.css";
+import { Inter } from "next/font/google";
+const inter = Inter({ subsets: ["latin"] });
 
 export default function MovementList({ movements }) {
-  console.log(movements);
   return (
-    <div className={styles.list}>
-      {console.log(movements)}
+    <div>
       {movements.map((movement) => (
         <Link
           key={movement.id}
           href={`/exercises/${movement.id}`}
           style={{ textDecoration: "none" }}
+          onClick={(e) => setQuery(e.target.value)}
         >
           <MovementPreview {...movement} />
         </Link>

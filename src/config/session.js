@@ -1,7 +1,8 @@
 import { IronSessionOptions } from "iron-session";
 
+
 export default {
-    cookieName: "pilates_planning_auth_cookie",
+    cookieName: "yoga_planning_auth_cookie",
     password: process.env.IRON_PASS,
     // secure: true should be used in production (HTTPS) but can't be used in development (HTTP)
     cookieOptions: {

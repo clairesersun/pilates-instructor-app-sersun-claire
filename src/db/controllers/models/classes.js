@@ -30,5 +30,4 @@ const classesSchema = new Schema({
 })
 
 
-console.log(models)
 export default models?.Classes || model('Classes', classesSchema)
