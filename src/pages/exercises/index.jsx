@@ -8,12 +8,14 @@ import Head from "next/head";
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "../../config/session";
 import Classes from "../../db/controllers/models/classes";
+import ClassPlanList from "@/component/classplanList";
+import { useRouter } from "next/router";
 
 //you do not need to store these movements. Just look at them via the fetch if selected it will direct to exercise page using query that is sent to see exercise. If you search for a movement, that query is sent to show, if none, just show all movements.
 
 // -- only show this page if the user is logged in. If they are not, redirect them to the login page.
 export const getServerSideProps = withIronSessionSsr(
-  async function getServerSideProps({ req }) {
+  async function getServerSideProps({ req, query: { name } }) {
     const user = req.session.user;
     if (!user) {
       req.session.destroy();
@@ -25,58 +27,65 @@ export const getServerSideProps = withIronSessionSsr(
       };
     }
 
-    return { props: { user } };
+    async function getListOfMovements() {
+      let URL = "https://yoga-api-nzy4.onrender.com/v1/poses";
+      if (name) {
+        URL += "?name=" + name;
+      }
+      const res = await fetch(URL);
+      if (res.status !== 200) return;
+      let data = await res.json();
+      console.log(Object.keys(data));
+      if (!Array.isArray(data)) {
+        data = [data];
+      }
+      return data?.map((mvmt) => ({
+        id: mvmt.id,
+        englishName: mvmt.english_name,
+        sanskritName: mvmt.sanskrit_name,
+        translatedName: mvmt.translation_name,
+        description: mvmt.pose_description,
+        image: mvmt.url_svg,
+      }));
+    }
+    let movements = await getListOfMovements();
+    return { props: { user, movements } };
   },
   sessionOptions
 );
 
 export default function LibraryOfMovements(props) {
-  const [{ movementSearchResults }, { allMovements }, dispatch] =
-    useMovementContext();
+  const router = useRouter();
+  const [{ movementSearchResults }, dispatch] = useMovementContext();
   const [query, setQuery] = useState("");
   const [fetching, setFetching] = useState(false);
   const [previousQuery, setPreviousQuery] = useState();
   const inputRef = useRef();
   const inputDivRef = useRef();
-
-  async function getListOfMovements() {
-    const res = await fetch(`https://yoga-api-nzy4.onrender.com/v1/poses`);
-    if (res.status !== 200) return;
-    const data = await res.json();
-    dispatch({
-      //it says this is not a function... why?
-      action: actions.SHOWALL_MOVEMENTS,
-      payload: data?.items?.map(({ english_name }) => ({
-        englishName: english_name,
-        sanskritName: sanskrit_name,
-        translatedName: translation_name,
-        description: pose_description,
-        image: url_svg,
-      })),
-    });
-  }
-
+  console.log(props.movements);
   async function handleSubmit(e) {
     e.preventDefault();
-    if (fetching || !query.trim() || query === previousQuery) return;
-    setPreviousQuery(query);
-    setFetching(true);
-    const res = await fetch(
-      `https://yoga-api-nzy4.onrender.com/v1/poses?name=${query}`
-    );
-    if (res.status !== 200) return;
-    const data = await res.json();
-    dispatch({
-      action: actions.SEARCH_MOVEMENTS,
-      payload: data?.items?.map(({ english_name }) => ({
-        englishName: english_name,
-        sanskritName: sanskrit_name,
-        translatedName: translation_name,
-        description: pose_description,
-        image: url_svg,
-      })),
-    });
-    setFetching(false);
+    if (!query) return;
+    router.replace(router.pathname + "?name=" + query);
+    // if (fetching || !query.trim() || query === previousQuery) return;
+    // setPreviousQuery(query);
+    // setFetching(true);
+    // const res = await fetch(
+    //   `https://yoga-api-nzy4.onrender.com/v1/poses?name=${query}`
+    // );
+    // if (res.status !== 200) return;
+    // const data = await res.json();
+    // dispatch({
+    //   action: actions.SEARCH_MOVEMENTS,
+    //   payload: data?.map((mvmt) => ({
+    //     englishName: mvmt.english_name,
+    //     sanskritName: mvmt.sanskrit_name,
+    //     translatedName: mvmt.translation_name,
+    //     description: mvmt.pose_description,
+    //     image: mvmt.url_svg,
+    //   })),
+    // });
+    // setFetching(false);
   }
 
   return (
@@ -92,7 +101,6 @@ export default function LibraryOfMovements(props) {
           href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧘‍♀️</text></svg>"
         />
       </Head>
-
       <Header />
       <main>
         <h1 className={styles.title}>Library of Movements</h1>
@@ -114,18 +122,18 @@ export default function LibraryOfMovements(props) {
             <button type="submit">Submit</button>
           </div>
         </form>
-        <div onload={getListOfMovements()}>
-          <MovementList movements={allMovements} /> :{" "}
-          {fetching ? (
+        <div>
+          <MovementList movements={props.movements} />
+          {/* {fetching ? (
             <Loading />
           ) : movementSearchResults?.length ? (
-            <MovementList movements={movementSearchResults} />
+            <ClassPlanList movements={movementSearchResults} />
           ) : (
             <NoResults
               {...{ inputRef, inputDivRef, previousQuery }}
               clearSearch={() => setQuery("")}
             />
-          )}
+          )} */}
         </div>
       </main>
     </>
@@ -163,10 +171,7 @@ function NoResults({ inputDivRef, inputRef, previousQuery, clearSearch }) {
           <div>
             {/* will I include the following filter? i think maybe not */}
             {/* <Filter />{" "} */}
-            <MovementList
-              onload={getListOfMovements()}
-              movement={movementSearchResults}
-            />
+            {/* <MovementList movement={movementSearchResults} /> */}
           </div>
         )}
       </button>

@@ -17,6 +17,8 @@ export default function MovementPreview({ englishName, sanskritName, image }) {
             : "https://i0.wp.com/yogawithtg.com/wp-content/uploads/2018/03/logo3.png?fit=300%2C167&ssl=1"
         }
         alt={englishName}
+        width={100}
+        height={100}
       />
       <div>
         <p>

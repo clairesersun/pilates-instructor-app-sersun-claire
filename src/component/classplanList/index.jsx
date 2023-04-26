@@ -10,15 +10,16 @@ import styles from "./style.module.css";
 export default function ClassPlanList({ classes }) {
   return (
     <div className={styles.list}>
-      {classes.map((classes) => (
-        <Link
-          key={classes.id}
-          href={`/classplans/${id}`}
-          style={{ textDecoration: "none" }}
-        >
-          <ClassPlanPreview {...classes} />
-        </Link>
-      ))}
+      {classes?.length &&
+        classes.map((classes) => (
+          <Link
+            key={classes.id}
+            href={`/classplans/${id}`}
+            style={{ textDecoration: "none" }}
+          >
+            <ClassPlanPreview {...classes} />
+          </Link>
+        ))}
     </div>
   );
 }

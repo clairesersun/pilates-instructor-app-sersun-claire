@@ -11,7 +11,6 @@ import Link from "next/link";
 import MovementPreview from "@/component/movementPreview";
 import movement from "../../db";
 
-
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req, params }) {
     const props = {};
@@ -42,73 +41,73 @@ export default function ClassPlan(props) {
   let classes;
   if (props.classes) {
     classes = props.classes;
-  } if (props.movements) {
-    movements = props.movements
-  } else return
-
-    //have an update
-    async function updateClass() {
-      const res = await fetch("/api/classes/one", {
-        method: "PUT",
-        body: JSON.stringify({ id: classes.id }),
-      });
-      if (res.status === 200) {
-        router.replace(router.asPath);
-      }
-    }
-
-    //delete from classes
-    async function removeClass() {
-      const res = await fetch("/api/classes/one", {
-        method: "DELETE",
-        body: JSON.stringify({ id: classes.id }),
-      });
-      if (res.status === 200) {
-        router.replace(router.asPath);
-      }
-    }
-
-    //delete from classes
-    async function deleteExercise() {
-      const res = await fetch("/api/movement", {
-        method: "DELETE",
-        body: JSON.stringify({ id: movements.id }),
-      });
-      if (res.status === 200) {
-        router.replace(router.asPath);
-      }
-    }
-
-    return (
-      <>
-        <Head>
-          <title>Yoga Class</title>
-          <meta name="description" content="Yoga Class" />
-          <link
-            rel="icon"
-            href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧘‍♀️</text></svg>"
-          />
-        </Head>
-
-        <Header />
-        <main>
-          <div className={styles.controls}>
-            <a href="#" onClick={() => router.back()}>
-              Return
-            </a>
-          </div>
-          <ClassInfo {...classes} id="staticText" />
-
-          <button onClick={DisplayEdit}>Edit</button>
-          <EditClass {...classes} id="editableText" />
-          <button onClick={removeClass} id="editableText">
-            Delete Class
-          </button>
-        </main>
-        <Footer />
-      </>
-    );
   }
+  if (props.movements) {
+    movements = props.movements;
+  } else return;
+
+  //have an update
+  async function updateClass() {
+    const res = await fetch("/api/classes/one", {
+      method: "PUT",
+      body: JSON.stringify({ id: classes.id }),
+    });
+    if (res.status === 200) {
+      router.replace(router.asPath);
+    }
+  }
+
+  //delete from classes
+  async function removeClass() {
+    const res = await fetch("/api/classes/one", {
+      method: "DELETE",
+      body: JSON.stringify({ id: classes.id }),
+    });
+    if (res.status === 200) {
+      router.replace(router.asPath);
+    }
+  }
+
+  //delete from classes
+  async function deleteExercise() {
+    const res = await fetch("/api/movement", {
+      method: "DELETE",
+      body: JSON.stringify({ id: movements.id }),
+    });
+    if (res.status === 200) {
+      router.replace(router.asPath);
+    }
+  }
+
+  return (
+    <>
+      <Head>
+        <title>Yoga Class</title>
+        <meta name="description" content="Yoga Class" />
+        <link
+          rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧘‍♀️</text></svg>"
+        />
+      </Head>
+
+      <Header />
+      <main>
+        <div className={styles.controls}>
+          <a href="#" onClick={() => router.back()}>
+            Return
+          </a>
+        </div>
+        <ClassInfo {...classes} id="staticText" />
+
+        <button onClick={DisplayEdit}>Edit</button>
+        <EditClass {...classes} id="editableText" />
+        <button onClick={removeClass} id="editableText">
+          Delete Class
+        </button>
+      </main>
+      <Footer />
+    </>
+  );
 }
 
 function ClassInfo({

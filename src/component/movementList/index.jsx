@@ -17,13 +17,13 @@ export default function MovementList({ movements }) {
   return (
     <div className={styles.list}>
       {console.log(movements)}
-      {movements.map((movements) => (
+      {movements.map((movement) => (
         <Link
-          key={movements.id}
-          href={`/exercises/${id}`}
+          key={movement.id}
+          href={`/exercises/${movement.id}`}
           style={{ textDecoration: "none" }}
         >
-          <MovementPreview {...movements} />
+          <MovementPreview {...movement} />
         </Link>
       ))}
     </div>

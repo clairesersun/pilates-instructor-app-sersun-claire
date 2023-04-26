@@ -3,7 +3,7 @@ import movementSchema from './movements'
 
 const classesSchema = new Schema({
     userId: {
-        type: SchemaTypes.ObjectId
+        type: Schema.Types.ObjectId
     },
     className: {
         type: String,
@@ -30,4 +30,5 @@ const classesSchema = new Schema({
 })
 
 
-export default models.Classes || model('Classes', classesSchema)
+console.log(models)
+export default models?.Classes || model('Classes', classesSchema)

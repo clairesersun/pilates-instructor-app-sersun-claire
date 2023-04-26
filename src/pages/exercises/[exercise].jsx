@@ -25,6 +25,7 @@ import styles from "../../styles/exercise.module.css";
 import Image from "next/image";
 import Footer from "@/component/footer";
 import Classes from "../../db/controllers/models/classes";
+import { useEffect } from "react";
 
 //you do not need to store these movements. Just look at them via the fetch and use the query from previous page either classes or movement list. Then you can add to classes from here.
 

@@ -5,8 +5,7 @@ import ClassPlanList from "@/component/classplanList";
 import Link from "next/link";
 import { withIronSessionSsr } from "iron-session/next";
 import sessionOptions from "src/config/session";
-import classes from "../../db";
-import Classes from "../../db/controllers/models/classes";
+// import classes from "../../db";
 
 // -- only show this page if the user is logged in. If they are not, redirect them to the login page.
 
@@ -44,6 +43,7 @@ export default function ClassPlans(props) {
       router.replace(router.asPath);
     }
   }
+  let classes = getAllClasses();
   return (
     <>
       <Head>
@@ -57,9 +57,9 @@ export default function ClassPlans(props) {
 
       <Header />
 
-      <main onLoad={getAllClasses()}>
-        <h1 className={styles.title}>Favorite Books</h1>
-        {props.classes.length > 0 ? (
+      <main>
+        <h1 className={styles.title}>Classes</h1>
+        {classes?.length > 0 ? (
           <ClassPlanList classes={classes} />
         ) : (
           <NoClasses />
