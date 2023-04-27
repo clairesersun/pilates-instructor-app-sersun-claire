@@ -49,7 +49,7 @@ export default withIronSessionApiRoute(
           return res.status(401).end() }
           try {
             const data = JSON.parse(req.body) //data is an object
-            const addedClass = await Classes.add(user.id, data) 
+            const addedClass = await classes.create(user.id, data) //or is it Classes?
             if (!addedClass) {
               req.session.destroy()
               return res.status(401).end

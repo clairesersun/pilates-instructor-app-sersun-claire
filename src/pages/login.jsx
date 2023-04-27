@@ -1,34 +1,8 @@
 import Image from "next/image";
-// import { Inter } from "next/font/google";
 import Link from "next/link";
 import Head from "next/head";
-// import { withIronSessionSsr } from "iron-session/next";
-// import sessionOptions from "../config/session";
 import { useRouter } from "next/router";
 import { useState } from "react";
-
-// const inter = Inter({ subsets: ["latin"] });
-
-/* 
-    Create a ServerSide Props with IronSessions
-    Within the login function √
-        create a Login Function √
-        create a handle login function √
-*/
-
-// DO I NEED THIS? I REMOVED PROPS FROM LOGIN FNC SO I DO NOT THINK SO
-// export const getServerSideProps = withIronSessionSsr(
-//   async function getServerSideProps({ req }) {
-//     const { user } = req.session;
-//     const props = {};
-//     if (user) {
-//       props.user = req.session.user;
-//     }
-//     props.isLoggedIn = !!user;
-//     return { props };
-//   },
-//   sessionOptions
-// );
 
 export default function Login() {
   const router = useRouter();
@@ -54,7 +28,7 @@ export default function Login() {
         },
         body: JSON.stringify({ username, password }),
       });
-      if (res.status === 200) return router.back();
+      if (res.status === 200) return router.push("/");
       const { error: message } = await res.json();
       setError(message);
     } catch (err) {
@@ -113,13 +87,6 @@ export default function Login() {
         </form>
         <Link href="/signup">
           <p>Sign up</p>
-        </Link>
-
-        <Link
-          href="/"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-        >
-          use this link when in development =++ goes home
         </Link>
       </main>
 

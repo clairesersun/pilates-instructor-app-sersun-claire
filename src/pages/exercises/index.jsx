@@ -8,6 +8,7 @@ import sessionOptions from "../../config/session";
 import { useRouter } from "next/router";
 const inter = Inter({ subsets: ["latin"] });
 import { Inter } from "next/font/google";
+import Footer from "@/component/footer";
 
 //you do not need to store these movements. Just look at them via the fetch if selected it will direct to exercise page using query that is sent to see exercise. If you search for a movement, that query is sent to show, if none, just show all movements.
 
@@ -70,10 +71,7 @@ export default function LibraryOfMovements(props) {
     <>
       <Head>
         <title>Yoga Class Planning Movement Library</title>
-        <meta
-          name="description"
-          content="Yoga Class Planning Movement Library"
-        />
+        <meta name="description" content="Library of Movements" />
         <link
           rel="icon"
           href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧘‍♀️</text></svg>"
@@ -131,6 +129,7 @@ export default function LibraryOfMovements(props) {
           )} */}
         </div>
       </main>
+      <Footer />
     </>
   );
 }

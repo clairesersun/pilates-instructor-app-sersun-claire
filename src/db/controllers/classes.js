@@ -4,12 +4,12 @@ import Classes from './models/classes'
 
 
 //add classes from adding one exercise 
-export async function create( classesId, className, datesTaught, location, description, exercise ) {
+export async function create( classesId, className, datesTaught, location, description, exercises ) {
   if (!(className))
     throw new Error('Must include class name')
 
   await dbConnect()
-  const addedExercises = add(classesId, exercise)
+  const addedExercises = add(classesId, exercises)
   const dateCreated = Date.now()
   const classes = await Classes.create({className, dateCreated, datesTaught, location, description, addedExercises})
 

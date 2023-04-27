@@ -65,7 +65,7 @@ export default function Signup(props) {
         },
         body: JSON.stringify({ username, email, igHandle, password }),
       });
-      if (res.status === 200) return router.push("/");
+      if (res.status === 200) return router.push("/accountcreated");
       const { error: message } = await res.json();
       setError(message);
     } catch (err) {
@@ -155,13 +155,6 @@ export default function Signup(props) {
         </form>
         <Link href="/login">
           <p>back to login</p>
-        </Link>
-
-        <Link
-          href="/accountcreated"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-        >
-          use this link when in development =+ this goes to confirmation page
         </Link>
       </main>
 

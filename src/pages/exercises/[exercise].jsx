@@ -24,11 +24,13 @@ import Header from "@/component/header";
 import styles from "../../styles/exercise.module.css";
 import Image from "next/image";
 import Footer from "@/component/footer";
-import Classes from "../../db/controllers/models/classes";
+// import classes from "../../db";
 import { useEffect } from "react";
 const inter = Inter({ subsets: ["latin"] });
 import { Inter } from "next/font/google";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+// import AddToClass from "@/component/addToClass";
+import NameOfClass from "@/component/nameOfClass";
 //you do not need to store these movements. Just look at them via the fetch and use the query from previous page either classes or movement list. Then you can add to classes from here.
 
 // export const getServerSideProps = withIronSessionSsr(
@@ -43,8 +45,10 @@ import { useParams } from "react-router-dom";
 // );
 
 export const getServerSideProps = withIronSessionSsr(
-  async function getServerSideProps({ req, ...id }) {
+  async function getServerSideProps({ req, params, ...id }) {
     const user = req.session.user;
+    // const cls = await classes.getAll(req.session.user.id, params.id);
+
     if (!user) {
       req.session.destroy();
       return {
@@ -54,26 +58,6 @@ export const getServerSideProps = withIronSessionSsr(
         },
       };
     }
-
-    // async function getListOfMovements() {
-    //   let URL = "https://yoga-api-nzy4.onrender.com/v1/poses";
-    //   const res = await fetch(URL);
-    //   if (res.status !== 200) return;
-    //   let data = await res.json();
-    //   if (!Array.isArray(data)) {
-    //     data = [data];
-    //   }
-    //   return data?.map((mvmt) => ({
-    //     id: mvmt.id,
-    //     englishName: mvmt.english_name,
-    //     sanskritName: mvmt.sanskrit_name,
-    //     translatedName: mvmt.translation_name,
-    //     description: mvmt.pose_description,
-    //     image: mvmt.url_svg,
-    //   }));
-    // }
-    // let movements = await getListOfMovements();
-    // return { props: { user, movements } };
 
     async function getMovement(id) {
       // console.log(id.resolvedUrl);
@@ -106,6 +90,7 @@ export const getServerSideProps = withIronSessionSsr(
     }
     // let movements = await GetMovement();
     let movements = await getMovement(id);
+    // return { props: { user, movements, cls } };
     return { props: { user, movements } };
   },
   sessionOptions
@@ -115,7 +100,8 @@ export default function Exercise(props) {
   const router = useRouter();
   const movementId = router.id;
   let movement = props.movements[0];
-  console.log(movement[0]); //hell yes! 12 hrs later lol
+  let classes = props.cls;
+  // console.log(movement[0]); //hell yes!
   // let lastItem = window.location.pathname.split("/").pop();
 
   // console.log(movement[lastItem]);
@@ -136,10 +122,72 @@ export default function Exercise(props) {
     }
   }
 
+  function AddToClass(...classes) {
+    return (
+      <div>
+        <button>New Class</button>
+        <NameOfClass />
+        {classes.map((classes) => (
+          <button onClick={addToClasses()} key={classes.id}>
+            {classes.className}
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  function NameOfClass() {
+    const router = useRouter();
+    const [{ className }, setForm] = useState({
+      className: "",
+    });
+    const [error, setError] = useState("");
+    function handleChange(e) {
+      setForm({ className, ...{ [e.target.name]: e.target.value } });
+    }
+    async function handleAdd(e, exercises) {
+      e.preventDefault();
+      if (!className.trim()) return setError("class name is missing");
+      try {
+        const res = await fetch("/api/classes", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({ className, exercises }),
+        });
+        if (res.status === 200) return router.back();
+        const { error: message } = await res.json();
+        setError(message);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    return (
+      <div>
+        <form
+          className="mb-32 grid text-center lg:mb-0 lg:grid-cols-1 lg:text-left group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+          onSubmit={handleAdd}
+        >
+          <label htmlFor="className">Name of class: </label>
+          <input
+            type="text"
+            name="className"
+            id="className"
+            onChange={handleChange}
+            value={className}
+          />
+          <button>√</button>
+          {error && <p>{error}</p>}
+        </form>
+      </div>
+    );
+  }
+
   return (
     <>
       <Head>
-        <title>Yoga Class Plans</title>
+        <title>{movement.englishName}</title>
         <meta name="description" content="Yoga Class Plans" />
         <link
           rel="icon"
@@ -147,25 +195,9 @@ export default function Exercise(props) {
         />
       </Head>
 
-      <main className="flex flex-col items-center justify-between p-24">
+      <main className="flex min-h-screen flex-col items-center justify-between p-24">
         <Header />
-        <div
-          className={`${inter.className} mb-32 grid text-center lg:mb-0 lg:grid-cols-2 lg:text-center
-           group rounded-lg border border-transparent px-5 py-4 transition-colors `}
-        >
-          <a
-            href="#"
-            onClick={() => router.back()}
-            className={`${inter.className} group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30`}
-          >
-            Return
-          </a>
-          <button
-            onClick={addToClasses}
-            className={`${inter.className} group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30`}
-          >
-            Add to Class
-          </button>
+        <div className=" group flex-box w-full  flex-col-1 items-center justify-between p-24 ">
           {movement ? (
             <MovementInfo key={movement.id} {...movement} />
           ) : (
@@ -177,12 +209,34 @@ export default function Exercise(props) {
               width={100}
               height={50}
               className={`${inter.className} 
-      relative flex place-items-center px-5 py-4`}
+            relative flex place-items-center px-5 py-4`}
             />
           )}
         </div>
+        <div
+          className={`${inter.className} mb-32 grid text-center lg:mb-0 lg:grid-cols-2 lg:text-center
+          group rounded-lg border border-transparent px-5 py-4 transition-colors `}
+        >
+          <a
+            href="#"
+            onClick={() => router.back()}
+            className={`${inter.className} group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30`}
+          >
+            Return
+          </a>
+          <button
+            id="everythingElse"
+            className={`${inter.className} group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30`}
+          >
+            Add to Class
+          </button>
+          {/* <Display {...classes} /> */}
+        </div>
       </main>
-      <Footer />
+      <Footer
+        className={`${inter.className} 
+        pb-6 pt-8`}
+      />
     </>
   );
 }
@@ -197,12 +251,12 @@ function MovementInfo({
   console.log(englishName);
   return (
     <>
-      <div className={styles.titleGroup}>
-        <div
-          className={`${inter.className} 
-       flex place-items-center
-     group `}
-        >
+      <div
+        className={`${inter.className} 
+        
+     group flex-box   flex-col-1 items-center justify-between p-24 `}
+      >
+        <div>
           <img
             src={
               image
@@ -213,23 +267,70 @@ function MovementInfo({
             width={100}
             height={50}
             className={`${inter.className} 
-      relative flex place-items-center px-5 py-4`}
+            mb-3 text-3xl font-semibold flex justify-center items-center place-items-center`}
           />
           <h1
             className={`${inter.className} 
-      text-left justify-left relative flex place-items-center
-      mb-3 text-2xl font-semibold  `}
+            mb-3 text-3xl font-semibold flex text-left `}
           >
             {englishName}
           </h1>
-          <h2>{sanskritName}</h2>
-          <h3>{translatedName}</h3>
+          <h2
+            className={`${inter.className} 
+      text-left relative flex 
+      mb-3 text-1xl font-semibold  `}
+          >
+            {sanskritName}
+          </h2>
+          <h3
+            className={`${inter.className} 
+      text-left relative flex 
+      mb-3 text-1xl  `}
+          >
+            {translatedName}
+          </h3>
         </div>
         <section>
-          <p> Description: </p>
-          <p>{description}</p>
+          <p
+            className={`${inter.className} 
+      text-left justify-left relative flex 
+      mb-3 text-1xl  `}
+          >
+            {" "}
+            Description:{" "}
+          </p>
+          <p
+            className={`${inter.className} 
+      text-left justify-left relative flex 
+      mb-3 text-1xl  `}
+          >
+            {description}
+          </p>
         </section>
       </div>
     </>
   );
 }
+
+// const Display = (classes) => {
+//   const [isAddOpen, setIsAddOpen] = useState(false);
+
+//   const toggleAdd = () => setIsAddOpen(!isAddOpen);
+
+//   const addStyle = {
+//     maxHeight: isAddOpen ? "200px" : "0px",
+//   };
+
+//   return (
+//     <>
+//       <button
+//         onClick={toggleAdd}
+//         id="everythingElse"
+//         className={`${inter.className} group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30`}
+//       >
+//         Add to Class
+//       </button>
+//       <AddToClass style={addStyle} id="addToClass" {...classes} />
+//     </>
+//   );
+// };

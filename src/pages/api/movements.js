@@ -3,6 +3,7 @@ import sessionOptions from "../../config/session"
 import Classes from '../../db/controllers/models/classes'
 import movement from '../../db'
 
+
 // this handler runs for /api/movements with any request method (GET, POST, etc)
 //add, remove
 export default withIronSessionApiRoute(
@@ -10,7 +11,7 @@ export default withIronSessionApiRoute(
     const userId = req.session.user
     const classes = Classes.findById(userId)
     switch(req.method) {
-            // On a POST request, add a exercise
+            
             case 'GET' :
               if (!classes) {
                 return res.status(401).end() }
